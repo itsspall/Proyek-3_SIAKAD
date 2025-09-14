@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UsersController extends Controller
 {
@@ -17,21 +18,11 @@ class UsersController extends Controller
     // Proses login
     public function login(Request $request)
     {
-        $credentials = $request->only('username', 'password');
-
-        // Cari user berdasarkan username
-        $user = DB::table('users')->where('username', $credentials['username'])->first();
-
-        if ($user && Hash::check($credentials['password'], $user->password)) {
-            // Simpan data ke session
-            $request->session()->put('user_id', $user->user_id);
-            $request->session()->put('role', $user->role);
-            $request->session()->put('full_name', $user->full_name);
-
-            return redirect()->route('home');
+        $credentials = $request->only('username','password');
+        if (! $token = auth('api')->attempt($credentials)) {
+            return response()->json(['error'=>'Invalid credentials'], 401);
         }
-
-        return redirect()->route('login')->with('error', 'Username atau password salah!');
+        return response()->json(['token' => $token]);
     }
 
     // Logout

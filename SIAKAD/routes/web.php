@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsersController;
 
-Route::get('/landing', function () {
+Route::get('/', function () {
     return view('landing');
 });
 
