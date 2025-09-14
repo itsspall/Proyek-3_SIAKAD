@@ -7,6 +7,8 @@ Route::get('/', function () {
     return view('landing');
 });
 
+Route::middleware('auth:sanctum')->get('/user', function(Request $r){ return $r->user(); });
+
 Route::get('/login', [UsersController::class, 'showLogin'])->name('login');
 Route::post('/login', [UsersController::class, 'login'])->name('login.post');
 Route::get('/logout', [UsersController::class, 'logout'])->name('logout');

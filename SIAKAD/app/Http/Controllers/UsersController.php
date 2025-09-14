@@ -18,11 +18,10 @@ class UsersController extends Controller
     // Proses login
     public function login(Request $request)
     {
-        $credentials = $request->only('username','password');
-        if (! $token = auth('api')->attempt($credentials)) {
-            return response()->json(['error'=>'Invalid credentials'], 401);
+        if (Hash::check($request->password, $user->password)) {
+            $token = $user->createToken('web-token')->plainTextToken;
+            return response()->json(['token' => $token]);
         }
-        return response()->json(['token' => $token]);
     }
 
     // Logout
