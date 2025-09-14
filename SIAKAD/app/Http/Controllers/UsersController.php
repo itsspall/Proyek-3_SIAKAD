@@ -28,7 +28,7 @@ class UsersController extends Controller
             $request->session()->put('role', $user->role);
             $request->session()->put('full_name', $user->full_name);
 
-            return redirect()->route('dashboard');
+            return redirect()->route('home');
         }
 
         return redirect()->route('login')->with('error', 'Username atau password salah!');
