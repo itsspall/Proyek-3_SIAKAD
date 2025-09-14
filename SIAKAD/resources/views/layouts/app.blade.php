@@ -7,7 +7,7 @@
 
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}" defer></script>
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet"> optional: project css
+    <!-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> optional: project css -->
 
     <style>
         .brand-highlight { font-weight: 700; color: #0d6efd; }
@@ -30,7 +30,7 @@
             <a class="navbar-brand d-flex align-items-baseline" href="/">
                 <div class="brand-title fade-up delay-1">
                     <span class="brand-highlight">Si</span><span class="brand-sub">stem</span>
-                    <span class="gap"></span>
+                    <span class="brand-gap"></span>
                     <span class="brand-highlight">Akad</span><span class="brand-sub">emik</span>
                 </div>
             </a>
@@ -55,8 +55,5 @@
     </main>
 
     @stack('scripts')
-</body>
-</html>
-
 </body>
 </html>

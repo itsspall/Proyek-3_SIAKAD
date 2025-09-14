@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id('course_id');
+            $table->string('course_code')->unique();
             $table->string('course_name', 100);
             $table->integer('credits');
             $table->integer('semester_offered')->nullable();
