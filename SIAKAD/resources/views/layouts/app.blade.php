@@ -41,10 +41,20 @@
 
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/students">Students</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/courses">Courses</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    @auth
+                        <li class="nav-item"><a class="nav-link" href="/home">Dashboard</a></li>
+                        @if(auth()->user()->role === 'admin')
+                            <li class="nav-item"><a class="nav-link" href="/students">Students</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/courses">Courses</a></li>
+                        @endif
+
+                        @if(auth()->user()->role === 'student')
+                            <li class="nav-item"><a class="nav-link" href="/courses">Courses</a></li>
+                        @endif
+                        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    @else
+                        <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
+                    @endauth
                 </ul>
             </div>
         </div>

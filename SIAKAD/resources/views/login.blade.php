@@ -7,6 +7,10 @@
 
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}" defer></script>
+
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-light">
 
@@ -52,4 +56,26 @@
     </div>
 
 </body>
+@if (session('error'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Login Gagal',
+        text: '{{ session("error") }}',
+        confirmButtonColor: '#3085d6',
+    });
+</script>
+@endif
+
+@if (session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil',
+        text: '{{ session("success") }}',
+        confirmButtonColor: '#3085d6',
+    });
+</script>
+@endif
+
 </html>

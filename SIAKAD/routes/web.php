@@ -2,17 +2,34 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CoursesController;
+use App\Http\Controllers\StudentsController;
+use App\Http\Middleware\JwtSessionMiddleware;
 
 Route::get('/', function () {
     return view('landing');
 });
 
-Route::middleware('auth:sanctum')->get('/user', function(Request $r){ return $r->user(); });
-
 Route::get('/login', [UsersController::class, 'showLogin'])->name('login');
 Route::post('/login', [UsersController::class, 'login'])->name('login.post');
 Route::get('/logout', [UsersController::class, 'logout'])->name('logout');
 
-Route::get('/home', function () {
-    return view('home');
-})->name('home');
+Route::middleware([JwtSessionMiddleware::class])->group(function () {
+
+    Route::get('/me', [UsersController::class, 'me']);
+    Route::post('/logout', [UsersController::class, 'logout']);
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+    // hanya student
+    Route::middleware('role:student')->group(function () {
+        Route::get('/courses', [CoursesController::class, 'index']);
+        Route::post('/courses/enroll/{id}', [CoursesController::class, 'enroll']);
+    });
+
+    // hanya admin
+    Route::middleware('role:admin')->group(function () {
+        Route::resource('/students', StudentsController::class);
+        Route::resource('/courses', CoursesController::class);
+    });
+});

@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UsersController extends Controller
 {
@@ -18,16 +15,27 @@ class UsersController extends Controller
     // Proses login
     public function login(Request $request)
     {
-        if (Hash::check($request->password, $user->password)) {
-            $token = $user->createToken('web-token')->plainTextToken;
-            return response()->json(['token' => $token]);
+        $credentials = $request->only('username', 'password');
+
+        if (! $token = JWTAuth::attempt($credentials)) {
+            // Kalau gagal login → redirect ke login dengan pesan error
+            return redirect()->back()->with('error', 'Username atau password salah!');
         }
+
+        // Simpan token di session
+        session(['jwt_token' => $token]);
+
+        return redirect()->route('home')->with('success', 'Login berhasil, selamat datang ' . auth()->user()->username);
     }
 
-    // Logout
-    public function logout(Request $request)
+    public function me()
     {
-        $request->session()->flush(); // hapus semua session
-        return redirect()->route('login');
+        return response()->json(auth()->user());
+    }
+
+    public function logout()
+    {
+        auth()->logout();
+        return response()->json(['message' => 'Logout berhasil']);
     }
 }
