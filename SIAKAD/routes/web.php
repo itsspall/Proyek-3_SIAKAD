@@ -29,8 +29,8 @@ Route::middleware([JwtSessionMiddleware::class])->group(function () {
 
     // hanya admin
     Route::middleware([JwtSessionMiddleware::class . ':admin'])->group(function () {
-        Route::get('/users', [UsersController::class, 'index']);
-        Route::resource('/students', StudentsController::class);
-        Route::resource('/courses', CoursesController::class);
+        Route::resource('users', UsersController::class);
+        Route::resource('students', StudentsController::class);
+        Route::resource('courses', CoursesController::class);
     });
 });

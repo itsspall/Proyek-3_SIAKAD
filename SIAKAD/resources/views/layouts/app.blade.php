@@ -22,7 +22,7 @@
         @media (max-width: 575px) { .navbar-nav { margin-top: .5rem; } }
     </style>
 
-    @stack('head')
+@stack('head')
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
@@ -63,6 +63,58 @@
     <main class="container mt-4">
         @yield('content')
     </main>
+
+    <footer>
+        <div class="text-center py-3 mt-4 border-top">
+            &copy; {{ date('Y') }} SIAKAD. All rights reserved.
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Alert dari session (success/error)
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '{{ session('error') }}'
+            });
+        @endif
+
+        // Konfirmasi delete
+        document.addEventListener("DOMContentLoaded", function() {
+            const deleteForms = document.querySelectorAll('.form-delete');
+            deleteForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Yakin ingin hapus?',
+                        text: "Data ini tidak bisa dikembalikan!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 
     @stack('scripts')
 </body>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\StudentsModel;
+use App\Models\UsersModel;
 
 class StudentsController extends Controller
 {
@@ -16,23 +17,40 @@ class StudentsController extends Controller
         return view('admin.students.create');
     }
 
-    // public function store(Request $request){
-    //     $request->validate([
-    //         'student_id' => 'required|unique:students,student_id',
-    //         'entry_year' => 'required|integer',
-    //         'major' => 'required|string|max:100',
-    //         'semester' => 'required|integer',
-    //         'dob' => 'required|date',
-    //         'gender' => 'required|in:M,F',
-    //         'user_id' => 'required|unique:students,user_id',
-    //     ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'student_id' => 'required|unique:students,student_id',
+            'username'   => 'required|unique:users,username',
+            'password'   => 'required|min:6',
+            'full_name'  => 'required|string|max:100',
+            'entry_year' => 'required|integer',
+            'major'      => 'required|string|max:100',
+            'dob'        => 'required|date',
+            'gender' => 'required|in:male,female',
+            'email'      => 'required|email|unique:users,email',
+            'phone_number' => 'nullable|string|max:20',
+        ]);
 
-    //     $student = new StudentsModel();
-    //     $student->name = $request->name;
-    //     $student->email = $request->email;
-    //     $student->password = bcrypt($request->password);
-    //     $student->save();
+        $user = new UsersModel;
+        $user->user_id   = $request->student_id;
+        $user->username  = $request->username;
+        $user->password  = bcrypt($request->password);
+        $user->role      = 'student';
+        $user->full_name = $request->full_name;
+        $user->email     = $request->email;
+        $user->phone_number = $request->phone_number;
+        $user->save();
 
-    //     return redirect()->route('students.index')->with('success', 'Student created successfully.');
-    // }
+        $student = new StudentsModel;
+        $student->student_id = $request->student_id;
+        $student->entry_year = $request->entry_year;
+        $student->major      = $request->major;
+        $student->dob        = $request->dob;
+        $student->gender     = $request->gender;
+        $student->save();
+
+        return redirect()->route('students')->with('success', 'Student created successfully.');
+    }
+
 }

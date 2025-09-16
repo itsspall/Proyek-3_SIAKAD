@@ -51,13 +51,20 @@
                     <td>{{ $user->email }}</td>
                     <td>{{ ucfirst($user->role) }}</td>
                     <td>
-                        <a href="" class="btn btn-sm btn-primary">Edit</a>
-                        <form action="" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-                        </form>
-                    </td>
+                    <!-- Tombol Edit -->
+                    <a href="{{ route('users.edit', $user->user_id) }}" class="btn btn-sm btn-warning">
+                        Edit
+                    </a>
+
+                    <!-- Tombol Delete -->
+                    <form action="{{ route('users.destroy', $user->user_id) }}" method="POST" class="d-inline form-delete">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            Delete
+                        </button>
+                    </form>
+                </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -84,13 +91,20 @@
                     <td>{{ $user->full_name }}</td>
                     <td>{{ $user->email }}</td>
                     <td>
-                        <a href="" class="btn btn-sm btn-primary">Edit</a>
-                        <form action="" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-                        </form>
-                    </td>
+                    <!-- Tombol Edit -->
+                    <a href="{{ route('users.edit', $user->user_id) }}" class="btn btn-sm btn-warning">
+                        Edit
+                    </a>
+
+                    <!-- Tombol Delete -->
+                    <form action="{{ route('users.destroy', $user->user_id) }}" method="POST" class="d-inline form-delete">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            Delete
+                        </button>
+                    </form>
+                </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -127,13 +141,21 @@
                     <td>{{ $user->student->dob ?? '-' }}</td>
                     <td>{{ $user->student->gender ?? '-' }}</td>
                     <td>
-                        <a href="" class="btn btn-sm btn-primary">Edit</a>
-                        <form action="" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-                        </form>
-                    </td>
+                    <!-- Tombol Edit -->
+                    <a href="{{ route('users.edit', $user->user_id) }}" class="btn btn-sm btn-warning">
+                        Edit
+                    </a>
+
+                    <!-- Tombol Delete -->
+                    <form action="{{ route('users.destroy', $user->user_id) }}" method="POST" class="d-inline form-delete">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            Delete
+                        </button>
+                    </form>
+
+                </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -161,7 +183,7 @@
                 <div class="tab-content" id="addUserTabContent">
                     <!-- FORM ADMIN -->
                     <div class="tab-pane fade show active" id="form_admin" role="tabpanel">
-                        <form action="" method="POST">
+                        <form action="{{ route('users.store') }}" method="POST">
                             @csrf
                             <div class="mb-3">
                                 <label for="user_id_admin" class="form-label">NIP (User ID)</label>
@@ -198,7 +220,7 @@
                             @csrf
                             <div class="mb-3">
                                 <label for="user_id_student" class="form-label">NIM (User ID)</label>
-                                <input type="text" name="user_id" id="user_id_student" class="form-control" required>
+                                <input type="text" name="student_id" id="user_id_student" class="form-control" required>
                             </div>
                             <div class="mb-3">
                                 <label for="username_student" class="form-label">Username</label>
@@ -251,7 +273,6 @@
             </div>
         </div>
     </div>
-
 </div>
 @endsection
     
