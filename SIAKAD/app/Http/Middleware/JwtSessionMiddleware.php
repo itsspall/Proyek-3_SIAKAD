@@ -8,21 +8,25 @@ use Exception;
 
 class JwtSessionMiddleware
 {
-    public function handle($request, Closure $next)
+public function handle($request, Closure $next, ...$roles)
     {
         try {
-            $token = session('jwt_token'); // ambil token dari session
-            if (! $token) {
+            $token = session('jwt_token');
+            if (!$token) {
                 return redirect()->route('login')->with('error', 'Silakan login dulu!');
             }
 
             $user = JWTAuth::setToken($token)->authenticate();
-            if (! $user) {
+            if (!$user) {
                 return redirect()->route('login')->with('error', 'Token tidak valid!');
             }
 
             auth()->setUser($user);
-        } catch (Exception $e) {
+
+            if (!empty($roles) && !in_array($user->role, $roles)) {
+                abort(403, 'Unauthorized');
+            }
+        } catch (\Exception $e) {
             return redirect()->route('login')->with('error', 'Token expired atau invalid!');
         }
 

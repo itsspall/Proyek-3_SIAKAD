@@ -22,13 +22,14 @@ Route::middleware([JwtSessionMiddleware::class])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
     // hanya student
-    Route::middleware('role:student')->group(function () {
+    Route::middleware([JwtSessionMiddleware::class . ':student'])->group(function () {
         Route::get('/courses', [CoursesController::class, 'index']);
         Route::post('/courses/enroll/{id}', [CoursesController::class, 'enroll']);
     });
 
     // hanya admin
-    Route::middleware('role:admin')->group(function () {
+    Route::middleware([JwtSessionMiddleware::class . ':admin'])->group(function () {
+        Route::get('/users', [UsersController::class, 'index']);
         Route::resource('/students', StudentsController::class);
         Route::resource('/courses', CoursesController::class);
     });
