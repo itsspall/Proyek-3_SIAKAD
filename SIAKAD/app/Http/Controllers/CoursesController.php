@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\CoursesModel;
+use App\Models\StudentsModel;
+use App\Models\TakesModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CoursesController extends Controller
 {
@@ -18,14 +21,70 @@ class CoursesController extends Controller
         }
 
         if ($user->role === 'student') {
-            // tampilkan daftar course yg bisa diambil student
+            $student = StudentsModel::where('student_id', $user->user_id)->firstOrFail();
             $courses = CoursesModel::all();
-            return view('student.courses.index', compact('courses'));
+            $enrolled = TakesModel::where('student_id', $student->student_id)->pluck('course_id')->toArray();
+
+            return view('student.courses.index', compact('courses', 'enrolled', 'student'));
         }
 
         abort(403, 'Unauthorized');
     }
 
+    public function enroll($id)
+    {
+        $user = Auth::user();
+
+        if ($user->role !== 'student') {
+            abort(403, 'Unauthorized');
+        }
+
+        $student = StudentsModel::where('student_id', $user->user_id)->firstOrFail();
+        $course = CoursesModel::findOrFail($id);
+
+        if ($student->semester != $course->semester_offered) {
+            return redirect()->back()->with('error', 'Semester tidak sesuai untuk mengambil mata kuliah ini.');
+        }
+
+        $already = TakesModel::where('student_id', $student->student_id)
+            ->where('course_id', $course->course_id)
+            ->exists();
+
+        if ($already) {
+            return redirect()->back()->with('error', 'Anda sudah mengambil course ini.');
+        }
+
+        TakesModel::create([
+            'student_id' => $student->student_id,
+            'course_id' => $course->course_id,
+            'enroll_date' => now(),
+            'status' => 'ongoing',
+            'attendance' => 0,
+        ]);
+
+        return redirect()->route('student.courses.index')->with('success', 'Berhasil mengambil mata kuliah.');
+    }
+
+    public function drop($courseId)
+    {
+        $student = auth()->user()->student;
+
+        $take = TakesModel::where('student_id', $student->student_id)
+            ->where('course_id', $courseId)
+            ->where('status', 'ongoing')
+            ->first();
+
+        if (!$take) {
+            return redirect()->back()->with('error', 'Course tidak ditemukan atau sudah tidak ongoing.');
+        }
+
+        // update langsung via query builder, hindari save()
+        TakesModel::where('student_id', $student->student_id)
+            ->where('course_id', $courseId)
+            ->update(['status' => 'dropped']);
+
+        return redirect()->route('courses.index')->with('success', 'Course berhasil di-drop.');
+    }
 
     public function create()
     {

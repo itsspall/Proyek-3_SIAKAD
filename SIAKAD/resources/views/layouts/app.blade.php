@@ -44,8 +44,8 @@
                     @auth
                         <li class="nav-item"><a class="nav-link" href="/home">Dashboard</a></li>
                         @if(auth()->user()->role === 'admin')
-                            <li class="nav-item"><a class="nav-link" href="/users">Users</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/courses">Courses</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/users">Users</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/courses">Courses</a></li>
                         @endif
 
                         @if(auth()->user()->role === 'student')

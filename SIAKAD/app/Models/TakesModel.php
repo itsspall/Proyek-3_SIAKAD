@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class TakesModel extends Model
 {
     protected $table = 'takes';
+    protected $primaryKey = null;
     public $incrementing = false; 
-    public $timestamps = true;
+    public $timestamps = true; 
 
     protected $fillable = [
         'student_id',
@@ -25,6 +26,16 @@ class TakesModel extends Model
         'attendance' => 'decimal:2',
     ];
 
+    public static $allowedStatus = ['ongoing', 'completed', 'dropped'];
+
+    public function setStatusAttribute($value)
+    {
+        if (!in_array($value, self::$allowedStatus)) {
+            throw new \InvalidArgumentException("Invalid status value: $value");
+        }
+        $this->attributes['status'] = $value;
+    }
+
     public function student(): BelongsTo
     {
         return $this->belongsTo(StudentsModel::class, 'student_id', 'student_id');
@@ -35,4 +46,3 @@ class TakesModel extends Model
         return $this->belongsTo(CoursesModel::class, 'course_id', 'course_id');
     }
 }
-

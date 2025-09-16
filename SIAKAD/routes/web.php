@@ -25,6 +25,7 @@ Route::middleware([JwtSessionMiddleware::class])->group(function () {
         Route::middleware([JwtSessionMiddleware::class . ':student'])->prefix('student')->group(function () {
             Route::get('/courses', [CoursesController::class, 'index'])->name('student.courses.index');
             Route::post('/courses/enroll/{id}', [CoursesController::class, 'enroll'])->name('student.courses.enroll');
+            Route::post('/courses/drop/{id}', [CoursesController::class, 'drop'])->name('student.courses.drop');
         });
 
         // hanya admin
