@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Models\UsersModel;
+use App\Models\StudentsModel;
 
 class UsersController extends Controller
 {
@@ -105,7 +107,14 @@ class UsersController extends Controller
 
     public function me()
     {
-        return response()->json(auth()->user());
+        $user = Auth::user();
+
+        $student = StudentsModel::where('student_id', $user->user_id)->first();
+
+        return view('student.profile', [
+            'user' => $user,
+            'student' => $student,
+        ]);
     }
 
     public function logout()

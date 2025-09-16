@@ -49,7 +49,8 @@
                         @endif
 
                         @if(auth()->user()->role === 'student')
-                            <li class="nav-item"><a class="nav-link" href="/courses">Courses</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('student.courses.index') }}">Courses</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/me">Profile</a></li>
                         @endif
                         <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
                     @else

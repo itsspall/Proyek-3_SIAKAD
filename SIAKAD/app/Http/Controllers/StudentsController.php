@@ -27,7 +27,7 @@ class StudentsController extends Controller
             'entry_year' => 'required|integer',
             'major'      => 'required|string|max:100',
             'dob'        => 'required|date',
-            'gender' => 'required|in:male,female',
+            'gender'     => 'required|in:male,female',
             'email'      => 'required|email|unique:users,email',
             'phone_number' => 'nullable|string|max:20',
         ]);

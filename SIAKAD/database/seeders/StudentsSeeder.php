@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\StudentsModel;
-use App\Models\User;
+use App\Models\UsersModel;
 use Illuminate\Support\Facades\Hash;
 
 class StudentsSeeder extends Seeder
@@ -17,7 +17,7 @@ class StudentsSeeder extends Seeder
      */
     public function run(): void
     {
-        $user1 = User::where('username', 'student1')->first();
+        $user1 = UsersModel::where('username', 'student1')->first();
         if (! $user1) {
             $this->command->info('User with username "student1" not found. Skipping student1 creation.');
         } else {
@@ -32,7 +32,7 @@ class StudentsSeeder extends Seeder
             ]);
         }
 
-        $user2 = User::where('username', 'student2')->first();
+        $user2 = UsersModel::where('username', 'student2')->first();
         if (! $user2) {
             $this->command->info('User with username "student2" not found. Skipping student2 creation.');
         } else {

@@ -21,16 +21,17 @@ Route::middleware([JwtSessionMiddleware::class])->group(function () {
     Route::post('/logout', [UsersController::class, 'logout']);
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-    // hanya student
-    Route::middleware([JwtSessionMiddleware::class . ':student'])->group(function () {
-        Route::get('/courses', [CoursesController::class, 'index']);
-        Route::post('/courses/enroll/{id}', [CoursesController::class, 'enroll']);
-    });
+        // hanya student
+        Route::middleware([JwtSessionMiddleware::class . ':student'])->prefix('student')->group(function () {
+            Route::get('/courses', [CoursesController::class, 'index'])->name('student.courses.index');
+            Route::post('/courses/enroll/{id}', [CoursesController::class, 'enroll'])->name('student.courses.enroll');
+        });
 
-    // hanya admin
-    Route::middleware([JwtSessionMiddleware::class . ':admin'])->group(function () {
-        Route::resource('users', UsersController::class);
-        Route::resource('students', StudentsController::class);
-        Route::resource('courses', CoursesController::class);
-    });
+        // hanya admin
+        Route::middleware([JwtSessionMiddleware::class . ':admin'])->prefix('admin')->group(function () {
+            Route::resource('users', UsersController::class);
+            Route::resource('students', StudentsController::class);
+            Route::resource('courses', CoursesController::class);
+        });
+
 });
