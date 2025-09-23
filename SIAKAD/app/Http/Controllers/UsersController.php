@@ -96,13 +96,28 @@ class UsersController extends Controller
     {
         $credentials = $request->only('username', 'password');
 
-        if (! $token = JWTAuth::attempt($credentials)) {
-            return redirect()->back()->with('error', 'Username atau password salah!');
+        if (! $token = auth()->attempt($credentials)) {
+            return redirect()->route('login')->withErrors([
+                'username' => 'Username atau password salah!',
+            ]);
         }
-        
-        session(['jwt_token' => $token]);
 
-        return redirect()->route('home')->with('success', 'Login berhasil, selamat datang ' . auth()->user()->username);
+        $user = auth()->user();
+
+        // Simpan role & id ke session
+        session([
+            'role'    => $user->role,
+            'user_id' => $user->user_id,
+            'jwt_token' => $token,
+        ]);
+
+        // dd($user);
+
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.courses.index')->with('success', 'Login berhasil sebagai Admin');
+        } else {
+            return redirect()->route('student.courses.index')->with('success', 'Login berhasil sebagai Student');
+        }
     }
 
     public function me()
@@ -117,9 +132,12 @@ class UsersController extends Controller
         ]);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
+        session()->flush();
         auth()->logout();
-        return response()->json(['message' => 'Logout berhasil']);
+
+        return redirect()->route('login')->with('success', 'Logout berhasil');
     }
+
 }

@@ -16,23 +16,28 @@ Route::post('/login', [UsersController::class, 'login'])->name('login.post');
 Route::get('/logout', [UsersController::class, 'logout'])->name('logout');
 
 Route::middleware([JwtSessionMiddleware::class])->group(function () {
-
-    Route::get('/me', [UsersController::class, 'me']);
-    Route::post('/logout', [UsersController::class, 'logout']);
+    Route::get('/me', [UsersController::class, 'me'])->name('me');
+    Route::post('/logout', [UsersController::class, 'logout'])->name('logout');
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-        // hanya student
-        Route::middleware([JwtSessionMiddleware::class . ':student'])->prefix('student')->group(function () {
-            Route::get('/courses', [CoursesController::class, 'index'])->name('student.courses.index');
-            Route::post('/courses/enroll/{id}', [CoursesController::class, 'enroll'])->name('student.courses.enroll');
-            Route::post('/courses/drop/{id}', [CoursesController::class, 'drop'])->name('student.courses.drop');
+    // hanya student
+    Route::middleware([JwtSessionMiddleware::class . ':student'])
+        ->prefix('student')
+        ->as('student.')
+        ->group(function () {
+            Route::get('/courses', [CoursesController::class, 'index'])->name('courses.index');
+            Route::post('/courses/enroll/{id}', [CoursesController::class, 'enroll'])->name('courses.enroll');
+            Route::post('/courses/drop/{id}', [CoursesController::class, 'drop'])->name('courses.drop');
+            Route::post('/courses/enroll-bulk', [CoursesController::class, 'enrollBulk'])->name('courses.enrollBulk');
         });
 
-        // hanya admin
-        Route::middleware([JwtSessionMiddleware::class . ':admin'])->prefix('admin')->group(function () {
+    // hanya admin
+    Route::middleware([JwtSessionMiddleware::class . ':admin'])
+        ->prefix('admin')
+        ->as('admin.')
+        ->group(function () {
             Route::resource('users', UsersController::class);
             Route::resource('students', StudentsController::class);
             Route::resource('courses', CoursesController::class);
         });
-
 });

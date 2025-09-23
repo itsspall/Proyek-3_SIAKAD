@@ -3,7 +3,7 @@
 @section('content')
 <div class="d-flex justify-content-between mb-3">
     <h3>Courses</h3>
-    <a href="{{ route('courses.create') }}" class="btn btn-primary">+ Add Course</a>
+    <a href="{{ route('admin.courses.create') }}" class="btn btn-primary">+ Add Course</a>
 </div>
 
 @if(session('success'))
@@ -34,8 +34,8 @@
             <td>{{ $course->room }}</td>
             <td>{{ $course->lecturer }}</td>
             <td>
-                <a href="{{ route('courses.edit', $course->course_id) }}" class="btn btn-sm btn-warning">Edit</a>
-                <form action="{{ route('courses.destroy', $course->course_id) }}" method="POST" class="d-inline form-delete">
+                <a href="{{ route('admin.courses.edit', $course->course_id) }}" class="btn btn-sm btn-warning">Edit</a>
+                <form action="{{ route('admin.courses.destroy', $course->course_id) }}" method="POST" class="d-inline form-delete">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-sm btn-danger">Delete</button>

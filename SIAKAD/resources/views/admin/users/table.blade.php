@@ -52,12 +52,12 @@
                     <td>{{ ucfirst($user->role) }}</td>
                     <td>
                     <!-- Tombol Edit -->
-                    <a href="{{ route('users.edit', $user->user_id) }}" class="btn btn-sm btn-warning">
+                    <a href="{{ route('admin.users.edit', $user->user_id) }}" class="btn btn-sm btn-warning">
                         Edit
                     </a>
 
                     <!-- Tombol Delete -->
-                    <form action="{{ route('users.destroy', $user->user_id) }}" method="POST" class="d-inline form-delete">
+                    <form action="{{ route('admin.users.destroy', $user->user_id) }}" method="POST" class="d-inline form-delete">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-sm btn-danger">
@@ -92,12 +92,12 @@
                     <td>{{ $user->email }}</td>
                     <td>
                     <!-- Tombol Edit -->
-                    <a href="{{ route('users.edit', $user->user_id) }}" class="btn btn-sm btn-warning">
+                    <a href="{{ route('admin.users.edit', $user->user_id) }}" class="btn btn-sm btn-warning">
                         Edit
                     </a>
 
                     <!-- Tombol Delete -->
-                    <form action="{{ route('users.destroy', $user->user_id) }}" method="POST" class="d-inline form-delete">
+                    <form action="{{ route('admin.users.destroy', $user->user_id) }}" method="POST" class="d-inline form-delete">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-sm btn-danger">
@@ -142,12 +142,12 @@
                     <td>{{ $user->student->gender ?? '-' }}</td>
                     <td>
                     <!-- Tombol Edit -->
-                    <a href="{{ route('users.edit', $user->user_id) }}" class="btn btn-sm btn-warning">
+                    <a href="{{ route('admin.users.edit', $user->user_id) }}" class="btn btn-sm btn-warning">
                         Edit
                     </a>
 
                     <!-- Tombol Delete -->
-                    <form action="{{ route('users.destroy', $user->user_id) }}" method="POST" class="d-inline form-delete">
+                    <form action="{{ route('admin.users.destroy', $user->user_id) }}" method="POST" class="d-inline form-delete">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-sm btn-danger">
@@ -183,7 +183,7 @@
                 <div class="tab-content" id="addUserTabContent">
                     <!-- FORM ADMIN -->
                     <div class="tab-pane fade show active" id="form_admin" role="tabpanel">
-                        <form action="{{ route('users.store') }}" method="POST">
+                        <form action="{{ route('admin.users.store') }}" method="POST">
                             @csrf
                             <div class="mb-3">
                                 <label for="user_id_admin" class="form-label">NIP (User ID)</label>
@@ -216,7 +216,7 @@
 
                     <!-- FORM STUDENT -->
                     <div class="tab-pane fade" id="form_student" role="tabpanel">
-                        <form action="{{ route('students.store') }}" method="POST">
+                        <form action="{{ route('admin.students.store') }}" method="POST">
                             @csrf
                             <div class="mb-3">
                                 <label for="user_id_student" class="form-label">NIM (User ID)</label>

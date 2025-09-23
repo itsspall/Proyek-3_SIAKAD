@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'SIAKAD') }}</title>
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}" defer></script>
     <!-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> optional: project css -->
@@ -38,24 +40,23 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    @auth
-                        <li class="nav-item"><a class="nav-link" href="/home">Dashboard</a></li>
-                        @if(auth()->user()->role === 'admin')
-                            <li class="nav-item"><a class="nav-link" href="/admin/users">Users</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/admin/courses">Courses</a></li>
-                        @endif
-
-                        @if(auth()->user()->role === 'student')
+                    @if(session('role'))
+                        @if(session('role') === 'admin')
+                            <li class="nav-item"><a class="nav-link" href="/home">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('admin.users.index') }}">Users</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('admin.courses.index') }}">Courses</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                        @elseif(session('role') === 'student')
+                            <li class="nav-item"><a class="nav-link" href="/home">Dashboard</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('student.courses.index') }}">Courses</a></li>
                             <li class="nav-item"><a class="nav-link" href="/me">Profile</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
                         @endif
-                        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
                     @else
                         <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
-                    @endauth
+                    @endif
                 </ul>
             </div>
         </div>
