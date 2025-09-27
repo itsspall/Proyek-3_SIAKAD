@@ -16,7 +16,6 @@ class JwtSessionMiddleware
      */
     public function handle(Request $request, Closure $next, ...$roles)
     {
-        // cek login via session('role')
         if (! session('role')) {
             return redirect()->route('login')->with('error', 'Silakan login dulu!');
         }

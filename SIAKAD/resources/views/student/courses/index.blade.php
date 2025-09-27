@@ -89,8 +89,6 @@
     // Render my courses (from enrolled array + derive details)
     function renderMyCourses() {
         myCourses.innerHTML = '';
-        // === PERBAIKAN UTAMA DI SINI ===
-        // Filter hanya mata kuliah yang statusnya BUKAN 'dropped'
         const myActiveCourses = courses.filter(course =>
             enrolled.some(e => e.course_id == course.course_id && e.status !== 'dropped')
         );
@@ -115,7 +113,6 @@
         attachDropButtons();
     }
 
-    // Fungsi lainnya sudah OK dan tidak perlu diubah
     function attachCheckboxListeners() {
         document.querySelectorAll('.course-checkbox').forEach(chk => {
             chk.addEventListener('change', updateTotalSks);

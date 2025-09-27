@@ -7,7 +7,7 @@ use App\Models\StudentsModel;
 use App\Models\TakesModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log; // Tambahkan Log
+use Illuminate\Support\Facades\Log;
 
 class CoursesController extends Controller
 {
@@ -15,7 +15,7 @@ class CoursesController extends Controller
     {
         $user = auth()->user();
         
-        // Bagian untuk Admin, sudah OK
+        // Bagian untuk Admin
         if ($user->role !== 'student') {
             $courses = CoursesModel::orderBy('semester_offered')->orderBy('course_code')->get();
             return view('admin.courses.index', compact('courses'));
@@ -23,23 +23,17 @@ class CoursesController extends Controller
 
         // Bagian untuk Student
         try {
-            // Pastikan user_id yang digunakan adalah milik student yang login
             $student = StudentsModel::where('student_id', $user->user_id)->firstOrFail();
             $courses = CoursesModel::orderBy('semester_offered')->orderBy('course_code')->get();
 
-            // === PERBAIKAN UTAMA DI SINI ===
-            // Ambil data enrolled sebagai collection of objects (bukan hanya ID)
-            // Ini akan memberikan 'course_id' dan 'status' ke frontend
             $enrolled = TakesModel::where('student_id', $student->student_id)
-                ->select('course_id', 'status') // Ambil kolom yang dibutuhkan saja
-                ->get(); // Gunakan get() bukan pluck()->toArray()
+                ->select('course_id', 'status')
+                ->get();
 
             return view('student.courses.index', compact('courses', 'enrolled', 'student'));
 
         } catch (\Exception $e) {
-            // Jika data student tidak ditemukan, arahkan ke halaman error atau login
             Log::error('Student data not found for user_id: ' . $user->user_id);
-            // Anda bisa redirect ke halaman error atau logout di sini
             return redirect()->route('login')->with('error', 'Student profile not found.');
         }
     }
@@ -56,12 +50,10 @@ class CoursesController extends Controller
             return response()->json(['error' => 'Semester mata kuliah tidak sesuai dengan semester Anda'], 422);
         }
         
-        // Cek dulu apakah record sudah ada
         $enrollment = \App\Models\TakesModel::where('student_id', $student->student_id)
             ->where('course_id', $course->course_id)
             ->first();
 
-        // KASUS 1: Record belum ada sama sekali -> Buat baru
         if (!$enrollment) {
             \App\Models\TakesModel::create([
                 'student_id' => $student->student_id,
@@ -70,20 +62,15 @@ class CoursesController extends Controller
                 'status' => 'ongoing',
                 'attendance' => 0,
             ]);
-        } 
-        // KASUS 2: Record sudah ada dan statusnya 'dropped' -> Re-enroll (update)
+        }
         else if ($enrollment->status === 'dropped') {
-            // === PERBAIKAN UTAMA DI SINI ===
-            // Gunakan query builder untuk memastikan HANYA satu baris yang di-update.
-            // Jangan gunakan $enrollment->update()
             \App\Models\TakesModel::where('student_id', $student->student_id)
-                ->where('course_id', $course->course_id) // <-- Query yang spesifik
+                ->where('course_id', $course->course_id)
                 ->update([
                     'status' => 'ongoing',
                     'enroll_date' => now(),
                 ]);
         }
-        // KASUS 3: Record sudah ada dan statusnya bukan 'dropped'
         else {
             return response()->json(['error' => 'Anda sudah terdaftar pada mata kuliah ini'], 409);
         }
@@ -94,7 +81,6 @@ class CoursesController extends Controller
             'inserted'  => ['course_id' => (int)$id, 'status' => 'ongoing']
         ]);
     }
-
 
     public function enrollBulk(Request $request)
     {
@@ -113,7 +99,6 @@ class CoursesController extends Controller
                     ->where('course_id', $cid)
                     ->first();
 
-                // Jika belum ada, buat baru
                 if (!$enrollment) {
                     \App\Models\TakesModel::create([
                         'student_id' => $student->student_id,
@@ -123,7 +108,6 @@ class CoursesController extends Controller
                     ]);
                     $inserted[] = ['course_id' => $cid, 'status' => 'ongoing'];
                 }
-                // Jika ada dan statusnya dropped, update
                 else if ($enrollment->status === 'dropped') {
                     \App\Models\TakesModel::where('student_id', $student->student_id)
                         ->where('course_id', $cid)
@@ -138,6 +122,7 @@ class CoursesController extends Controller
             return response()->json(['error' => 'Terjadi kesalahan pada server'], 500);
         }
     }
+    
     public function drop(Request $request, $id)
     {
         $user = auth()->user();
@@ -146,11 +131,10 @@ class CoursesController extends Controller
         $student = \App\Models\StudentsModel::where('student_id', $user->user_id)->firstOrFail();
 
         $affectedRows = \App\Models\TakesModel::where('student_id', $student->student_id)
-            ->where('course_id', $id) // <-- Klausa ini yang mencegah semua data ter-update
+            ->where('course_id', $id)
             ->where('status', 'ongoing')
             ->update(['status' => 'dropped', 'updated_at' => now()]);
         
-        // Cek apakah ada baris yang ter-update
         if ($affectedRows > 0) {
             return response()->json([
                 'success' => true,
@@ -165,7 +149,6 @@ class CoursesController extends Controller
         return response()->json(['error' => 'Mata kuliah tidak ditemukan atau statusnya tidak "ongoing"'], 404);
     }
 
-    // CREATE, STORE, EDIT, UPDATE, DESTROY methods (no changes needed)
     public function create()
     {
         return view('admin.courses.create');

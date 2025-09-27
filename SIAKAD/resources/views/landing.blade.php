@@ -17,10 +17,8 @@
         .brand-title .brand-highlight { color: var(--primary); display:inline-block; transform-origin:center; }
         .brand-title .brand-sub { color: var(--dark); display:inline-block; }
 
-        /* Reduce space between parts while keeping readable separation */
         .brand-title .gap { display:inline-block; width: 0.35   rem; }
 
-        /* Welcome animation (fade up) */
         .fade-up { opacity:0; transform: translateY(10px); animation: fadeUp .7s ease-out forwards; }
         .fade-up.delay-1 { animation-delay: .15s; }
         .fade-up.delay-2 { animation-delay: .32s; }
@@ -31,7 +29,6 @@
         .subtitle { color: #495057; margin-top:.75rem; font-size:1.05rem; }
         .cta { margin-top:1.25rem; }
 
-        /* subtle hover for CTA */
         .btn-primary { transition: transform .12s ease, box-shadow .12s ease; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(13,110,253,0.12); }
     </style>

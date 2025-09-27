@@ -104,14 +104,11 @@ class UsersController extends Controller
 
         $user = auth()->user();
 
-        // Simpan role & id ke session
         session([
             'role'    => $user->role,
             'user_id' => $user->user_id,
             'jwt_token' => $token,
         ]);
-
-        // dd($user);
 
         if ($user->role === 'admin') {
             return redirect()->route('admin.courses.index')->with('success', 'Login berhasil sebagai Admin');
